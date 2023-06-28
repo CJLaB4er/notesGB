@@ -1,3 +1,6 @@
+import json
+
+
 def main():
     # data = {"notes": []}
     interface()
@@ -26,6 +29,16 @@ def interface():
             case "5":
                 print("Программа завершена")
                 break
+
+
+def create_data():  # Функция открывает и считывает файл с заметками, при отсутствиии файла, создаёт новый словарь
+    try:
+        with open("notes1.json") as file:
+            data = json.load(file)
+    except:
+        data = {"notes": [], "count_id": 0}
+
+    return data
 
 
 main()
