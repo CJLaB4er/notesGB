@@ -1,8 +1,8 @@
+from datetime import datetime
 import json
 
 
 def main():
-    # data = {"notes": []}
     interface()
 
 
@@ -46,17 +46,20 @@ def create_note(): #Функция пошагово создаёт новую з
     data = create_data()
     notes = data.get('notes')
     count = data['count_id'] + 1 #Получение id на основании ранее имеющихся id в файле заметок
+    date_stamp = datetime.now().strftime("%d.%m.%Y %I:%M")  # Строка с отметкой времени, последнего изменения
     note = { #Заполнение полей заметки
         "id": count,
         "title": input('Введите заголовок заметки...\n'),
-        "body": input('Введите информацию заметки...\n')
+        "body": input('Введите информацию заметки...\n'),
+        "last_edit":date_stamp
     }
+
     notes.append(note) #Добавление новой заметки к списку уже имеющихся
     data['notes'] = notes
     data['count_id'] = count #обновление значения id для создания следующих заметок
 
     with open('notes.json', 'w') as file: #запись в файл
-        json.dump(data, file)
+        json.dump(data, file, indent=4)
 
 
 main()
