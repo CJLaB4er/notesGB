@@ -95,7 +95,9 @@ def delete_note():  # Функция для удаления заметки по
         save_notes(data)
 
 
-def save_notes(data: dict):  # Функция сохраняет в файл изменения произведенные с заметками
+# Функция сохраняет в файл изменения произведенные с заметками, перед сохранением, производится сортировка по времени последнего изменения
+def save_notes(data: dict):
+    data['notes'] = sorted(data['notes'], key=return_datetime, reverse=True)
     with open('notes.json', 'w') as file:  # запись в файл
         json.dump(data, file, indent=4, ensure_ascii=False)
 
@@ -116,7 +118,7 @@ def search_note() -> list:  # Функция ищет заметку по id и 
         return note_data
 
 
-def edit_note(): #Функция редактирует заголовок и тело заметки по id, обновляется время последнего редактирования
+def edit_note():  # Функция редактирует заголовок и тело заметки по id, обновляется время последнего редактирования
     data = create_data()
     print("Введите id заметки, для её редактирования...")
     note_data = search_note()
@@ -127,6 +129,11 @@ def edit_note(): #Функция редактирует заголовок и т
     data['notes'].pop(note_data[1])
     data['notes'].append(note)
     save_notes(data)
+
+#Данная функция нужна для сортировки заметок по дате создания. Принимает на вход словарь заметки, преобразует строку
+# c датой последнего редактирования и возвращает обхект datetime
+def return_datetime(note: dict) -> datetime:
+    return datetime.strptime(note['last_edit'], '%d.%m.%Y %H:%M')
 
 
 if __name__ == "__main__":
