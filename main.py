@@ -23,6 +23,7 @@ def interface():
                 create_note()
             case "2":
                 print("вывод списка заметок")
+                print_list_notes()
             case "3":
                 print("редактирование заметки")
             case "4":
@@ -61,5 +62,13 @@ def create_note(): #Функция пошагово создаёт новую з
     with open('notes.json', 'w') as file: #запись в файл
         json.dump(data, file, indent=4)
 
+
+def print_list_notes(): #Функция выводит список всех заметок
+    data = create_data()
+    count = 0
+    for note in data['notes']:
+        count+=1
+        print(f"{count}). id: {note['id']} \u231a{note['last_edit']} '{note['title']}' ")
+    print(f"Всего записей - {count} \n")
 
 main()
