@@ -73,35 +73,44 @@ def print_list_notes():  # Функция выводит список всех �
 
 
 def read_note():  # Функция запросит id заметки, и отобразит ее содержимое
+    print("Введите id необходимой заметки...\n")
+    note_data = search_note()
+    if len(note_data) > 0:
+        print(f"{note_data[0]['title']}\n"
+              f"{note_data[0]['body']}\n"
+              f"Последний раз отредактировано: {note_data[0]['last_edit']}\n"
+              )
+
+
+def delete_note(): #Функция для удаления заметки по id
     data = create_data()
-    choice = input("Введите id необходимой заметки...\n")
-    for note in data['notes']:
-        if note['id'] == choice:
-            print(f"{note['title']}\n"
-                  f"{note['body']}\n"
-                  f"Последний раз отредактировано: {note['last_edit']}\n"
-                  )
-            break
-    else:
-        print(f"Заметка с id = {choice} не найдена\n")
+    print("Введите id заметки, для её удаления...")
+    note_data = search_note()
+    if len(note_data) > 0:
+        data['notes'].pop(note_data[1])
+        print(f"Заметка с id = {note_data[0]['id']} {note_data[0]['title']} была удалена")
+        save_notes(data)
 
 
-def delete_note():
-    data = create_data()
-    choice = input("Введите id заметки, которую требуется удалить\n")
-    i = 0
-    for note in data['notes']:
-        if note['id'] == choice:
-            data['notes'].pop(i)
-            save_notes(data)
-            break
-        i += 1
-    else:
-        print(f"Заметка с id = {choice} не найдена\n")
-
-def save_notes(data:dict): #Функция сохраняет в файл изменения произведенные с заметками
+def save_notes(data: dict):  # Функция сохраняет в файл изменения произведенные с заметками
     with open('notes.json', 'w') as file:  # запись в файл
         json.dump(data, file, indent=4, ensure_ascii=False)
+
+
+def search_note() -> list: #Функция ищет заметку по id и возвращает список [{элементы заметки}, index], если заметка не найдена, вернется пустой список
+    data = create_data()
+    i = 0
+    note_data = []
+    choice = input()
+    for note in data['notes']:
+        if note['id'] == choice:
+            note_data.append(note)
+            note_data.append(i)
+            return note_data
+        i += 1
+    else:
+        print("Заметка с заданным id не найдена\n")
+        return note_data
 
 
 if __name__ == "__main__":
