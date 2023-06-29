@@ -64,10 +64,10 @@ def create_note(): #Функция пошагово создаёт новую з
     data['count_id'] = count #обновление значения id для создания следующих заметок
 
     with open('notes.json', 'w') as file: #запись в файл
-        json.dump(data, file, indent=4)
+        json.dump(data, file, indent=4, ensure_ascii=False)
 
 
-def print_list_notes(): #Функция выводит список всех заметок
+def print_list_notes(): #Функция выводит список всех заметок с краткой информацией
     data = create_data()
     count = 0
     for note in data['notes']:
@@ -75,7 +75,7 @@ def print_list_notes(): #Функция выводит список всех з�
         print(f"{count}). id: {note['id']} \u231a{note['last_edit']} '{note['title']}' ")
     print(f"Всего записей - {count} \n")
 
-def read_note():
+def read_note(): #Функция запросит id заметки, и отобразит ее содержимое
     data = create_data()
     choice = input("Введите id необходимой заметки...\n")
     for note in data['notes']:
@@ -84,6 +84,9 @@ def read_note():
                   f"{note['body']}\n"
                   f"Последний раз отредактировано: {note['last_edit']}\n"
                   )
+            break
+    else:
+        print(f"Заметка с id = {choice} не найдена\n")
 
 
 main()
