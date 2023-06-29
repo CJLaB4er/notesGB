@@ -2,10 +2,6 @@ from datetime import datetime
 import json
 
 
-def main():
-    interface()
-
-
 def interface():
     while True:
         print('Выберите одну из опций:\n'
@@ -16,9 +12,9 @@ def interface():
               '5 - удалить заметку\n'
               '6 - выход из программы\n')
 
-        answer = input()
+        choice = input()
 
-        match answer:
+        match choice:
             case "1":
                 print("создание заметки")
                 create_note()
@@ -32,6 +28,7 @@ def interface():
                 print("отредактировать заметку")
             case "5":
                 print("удаление заметки")
+                delete_note()
             case "6":
                 print("Программа завершена")
                 break
@@ -47,35 +44,35 @@ def create_data():  # Функция открывает и считывает ф
     return data
 
 
-def create_note(): #Функция пошагово создаёт новую заметку, автоматически присваивает id и записывает в файл
+def create_note():  # Функция пошагово создаёт новую заметку, автоматически присваивает id и записывает в файл
     data = create_data()
     notes = data.get('notes')
-    count = data['count_id'] + 1 #Получение id на основании ранее имеющихся id в файле заметок
+    count = data['count_id'] + 1  # Получение id на основании ранее имеющихся id в файле заметок
     date_stamp = datetime.now().strftime("%d.%m.%Y %H:%M")  # Строка с отметкой времени, последнего изменения
-    note = { #Заполнение полей заметки
+    note = {  # Заполнение полей заметки
         "id": str(count),
         "title": input('Введите заголовок заметки...\n'),
         "body": input('Введите информацию заметки...\n'),
-        "last_edit":date_stamp
+        "last_edit": date_stamp
     }
 
-    notes.append(note) #Добавление новой заметки к списку уже имеющихся
+    notes.append(note)  # Добавление новой заметки к списку уже имеющихся
     data['notes'] = notes
-    data['count_id'] = count #обновление значения id для создания следующих заметок
+    data['count_id'] = count  # обновление значения id для создания следующих заметок
 
-    with open('notes.json', 'w') as file: #запись в файл
-        json.dump(data, file, indent=4, ensure_ascii=False)
+    save_notes(data)
 
 
-def print_list_notes(): #Функция выводит список всех заметок с краткой информацией
+def print_list_notes():  # Функция выводит список всех заметок с краткой информацией
     data = create_data()
     count = 0
     for note in data['notes']:
-        count+=1
+        count += 1
         print(f"{count}). id: {note['id']} \u231a{note['last_edit']} '{note['title']}' ")
     print(f"Всего записей - {count} \n")
 
-def read_note(): #Функция запросит id заметки, и отобразит ее содержимое
+
+def read_note():  # Функция запросит id заметки, и отобразит ее содержимое
     data = create_data()
     choice = input("Введите id необходимой заметки...\n")
     for note in data['notes']:
@@ -89,4 +86,23 @@ def read_note(): #Функция запросит id заметки, и отоб
         print(f"Заметка с id = {choice} не найдена\n")
 
 
-main()
+def delete_note():
+    data = create_data()
+    choice = input("Введите id заметки, которую требуется удалить\n")
+    i = 0
+    for note in data['notes']:
+        if note['id'] == choice:
+            data['notes'].pop(i)
+            save_notes(data)
+            break
+        i += 1
+    else:
+        print(f"Заметка с id = {choice} не найдена\n")
+
+def save_notes(data:dict): #Функция сохраняет в файл изменения произведенные с заметками
+    with open('notes.json', 'w') as file:  # запись в файл
+        json.dump(data, file, indent=4, ensure_ascii=False)
+
+
+if __name__ == "__main__":
+    interface()
