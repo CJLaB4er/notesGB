@@ -51,7 +51,7 @@ def create_note(): #Функция пошагово создаёт новую з
     data = create_data()
     notes = data.get('notes')
     count = data['count_id'] + 1 #Получение id на основании ранее имеющихся id в файле заметок
-    date_stamp = datetime.now().strftime("%d.%m.%Y %I:%M")  # Строка с отметкой времени, последнего изменения
+    date_stamp = datetime.now().strftime("%d.%m.%Y %H:%M")  # Строка с отметкой времени, последнего изменения
     note = { #Заполнение полей заметки
         "id": str(count),
         "title": input('Введите заголовок заметки...\n'),
